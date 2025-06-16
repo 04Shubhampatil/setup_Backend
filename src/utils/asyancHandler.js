@@ -6,9 +6,45 @@
  }
 
 
-//^ const  asyncHandler=()={}
-//^ const  asyncHandler=(fun)= ()=>{}
-//^ const  asyncHandler=(fun)= async()=>{}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+//* const  asyncHandler=()={}
+//* const  asyncHandler=(fun)= ()=>{}
+//* const  asyncHandler=(fun)= async()=>{}
 
 
 // const asyncHandler = (fn) => (req, res, next) {

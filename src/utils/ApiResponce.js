@@ -6,3 +6,6 @@ class Apiresponce {
     this.success = statusCode < 400;
   }
 }
+
+
+export default Apiresponce;

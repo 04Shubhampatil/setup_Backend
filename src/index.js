@@ -13,7 +13,7 @@ connectDB()
   .catch((err) => {
     console.log("MONGONdb Connection faild!!", err);
   });
-app.on("erroe", (error) => {
+app.on("error", (error) => {
   console.log("Error:", error);
   throw error;
 });

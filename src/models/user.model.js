@@ -18,11 +18,6 @@ const userSchema = new mongoose.Schema(
       unique: true,
       lowercase: true,
       trim: true,
-    },
-    email: {
-      type: String,
-      required: true,
-      trim: true,
       index: true,
     },
     fullName: {
@@ -41,7 +36,7 @@ const userSchema = new mongoose.Schema(
 
     watchHistory: [
       {
-        typr: Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: "Video",
       },
     ],
@@ -57,7 +52,7 @@ const userSchema = new mongoose.Schema(
 );
 
 userSchema.pre("save", async function (next) {
-  if (this.modified("password")) return next();
+  if (!this.isModified("password")) return next();
 
   this.password = bcrypt.hash(this.password, 10);
   next();
@@ -92,4 +87,4 @@ process.env.REFRESH_TOKEN_SECRET,
 )
 }
 
-export const User = mongoose.model("User", userSchema)
+export default mongoose.model("User", userSchema)

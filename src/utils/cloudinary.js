@@ -1,5 +1,4 @@
 import { v2 as cloudinary } from 'cloudinary';
-import { on } from 'events';
 import fs from 'fs';
 
 

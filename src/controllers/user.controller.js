@@ -187,7 +187,7 @@ const refereshAccessToken = (async (req, res) => {
     refreshToken || res.body.refreshToken
 
   if (!incomingReferesToken) {
-    throw new ApiError(401, "unauthorize request ")
+    throw new ApiError(401, "unauthorized request ")
   }
 
   try {

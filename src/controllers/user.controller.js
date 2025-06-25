@@ -3,6 +3,7 @@ import ApiError from "../utils/Apierror.js"
 import User from "../models/user.model.js"
 import { uploadOnCloudinary } from "../utils/cloudinary.js"
 import { ApiResponse } from "../utils/ApiResponce.js"
+import jwt from "jsonwebtoken"
 
 const generateAccessAndRefereshToken = async (userId) => {
   try {
@@ -170,20 +171,70 @@ const logoutUser = asyncHandler(async (req, res) => {
     }
 
   )
-   const options = {
+  const options = {
     httpOnly: true,
     secure: true
   }
 
   return res.status(200)
-  .clearCookie("accessToken",options)
-  .clearCookie("refereshToken",options)
-  .json(new ApiResponse(200, {}, "User logged Out"))
+    .clearCookie("accessToken", options)
+    .clearCookie("refereshToken", options)
+    .json(new ApiResponse(200, {}, "User logged Out"))
 })
 
+const refereshAccessToken = (async (req, res) => {
+  const incomingReferesToken = req.cookies.
+    refreshToken || res.body.refreshToken
+
+  if (!incomingReferesToken) {
+    throw new ApiError(401, "unauthorize request ")
+  }
+
+  try {
+    const decodedToken = jwt.verify(
+      incomingReferesToken,
+      process.env.REFRESH_TOKEN_SECRET
+    )
+
+    const user = await User.findById(decodedToken?._id)
+
+    if (!user) {
+      throw new ApiError(401, "Invalid referesh Token ")
+    }
+
+    if (incomingReferesToken !== user?.refreshToken) {
+      throw new ApiError(401, "referesh token is expired or used ")
+    }
+
+    const options = {
+      httpOnly: true,
+      secure: true
+    }
+
+    const { accessToken, newRefreshToken } = await generateAccessAndRefereshToken(user._id)
+    return res
+      .status(200)
+      .cookie("accessToken", accessToken, options)
+      .cookie("refreshToken", newRefreshToken, options)
+      .json(
+        new ApiResponse(
+          200,
+          { accessToken, refreshToken: newRefreshToken },
+          "Access token referesh successfully"
+        )
+      )
+  } catch (error) {
+    throw new ApiError(401, error?.message || "Invalid refresh token")
+
+  }
+})
+
+
+
 export {
-  registerUser, 
+  registerUser,
   loggedInUser,
-  logoutUser
+  logoutUser,
+  refereshAccessToken
 
 };
